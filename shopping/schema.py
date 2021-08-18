@@ -70,7 +70,46 @@ class Query(graphene.ObjectType):
     def resolve_all_category(self, info):
         return Category.objects.all()
 
+# ----------------------------------------------------------------
+# Update category
+class UpdateCategory(graphene.Mutation):
+    class Arguments:
+        category_data = CategoryInput(required=True)
+    
+    category = graphene.Field(CategoryType)
 
+    def mutate(self, info, category_data=None):
+
+        category_instance = Category.objects.get(pk=category_data.id)
+
+        if category_instance:
+            category_instance.category = category_data.category
+            category_instance.save()
+            return UpdateCategory(category=category_instance)
+
+        return UpdateCategory(category=None)
+
+# ----------------------------------------------------------------
+# Delete category
+class DeleteCategory(graphene.Mutation):
+    class Arguments:
+        id = graphene.ID()
+
+    category = graphene.Field(CategoryType)
+
+    def mutate(self, info, id):
+        category_instance = Category.objects.get(pk=id)
+        category_instance.delete()
+
+        return None
+
+
+# ----------------------------------------------------------------
+# Mutation
 class Mutation(graphene.ObjectType):
     addProduct = AddProduct.Field()
+
+    # Mutation Category
     addCategory = AddCategory.Field()
+    updateCategory = UpdateCategory.Field()
+    deleteCategory = DeleteCategory.Field()
