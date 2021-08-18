@@ -15,7 +15,7 @@ class CategoryType(DjangoObjectType):
 class ProductInput(graphene.InputObjectType):
     id = graphene.ID()
     product = graphene.String()
-    category = graphene.String()
+    category = graphene.Int()
     price = graphene.Float()
     description = graphene.String()
 
@@ -36,6 +36,25 @@ class AddProduct(graphene.Mutation):
         product_instance.save()
         return AddProduct(product=product_instance)
 
+
+class CategoryInput(graphene.InputObjectType):
+    id = graphene.ID()
+    category = graphene.String()
+
+
+class AddCategory(graphene.Mutation):
+    class Arguments:
+        category_data = CategoryInput(required=True)
+    
+    category = graphene.Field(CategoryType)
+
+    def mutate(self, info, category_data=None):
+        category_instance = Category(
+            category=category_data.category
+        )
+        category_instance.save()
+        return AddCategory(category=category_instance)
+
 class Query(graphene.ObjectType):
     all_products = graphene.List(ProductType)
     all_categorys = graphene.List(CategoryType)
@@ -49,3 +68,4 @@ class Query(graphene.ObjectType):
 
 class Mutation(graphene.ObjectType):
     addProduct = AddProduct.Field()
+    addCategory = AddCategory.Field()
