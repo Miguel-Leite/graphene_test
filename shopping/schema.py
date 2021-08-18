@@ -12,6 +12,8 @@ class CategoryType(DjangoObjectType):
         model = Category
         fields = ['id','category']
 
+# ----------------------------------------------------------------
+# Seting data product
 class ProductInput(graphene.InputObjectType):
     id = graphene.ID()
     product = graphene.String()
@@ -19,7 +21,8 @@ class ProductInput(graphene.InputObjectType):
     price = graphene.Float()
     description = graphene.String()
 
-
+# ----------------------------------------------------------------
+# Create new product
 class AddProduct(graphene.Mutation):
     class Arguments:
         product_data = ProductInput(required=True)
@@ -36,12 +39,14 @@ class AddProduct(graphene.Mutation):
         product_instance.save()
         return AddProduct(product=product_instance)
 
-
+# ----------------------------------------------------------------
+# seting data category
 class CategoryInput(graphene.InputObjectType):
     id = graphene.ID()
     category = graphene.String()
 
-
+# ----------------------------------------------------------------
+# Create new category
 class AddCategory(graphene.Mutation):
     class Arguments:
         category_data = CategoryInput(required=True)
